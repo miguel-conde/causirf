@@ -147,21 +147,21 @@ evr <- function(obj) {
 #' @aliases autoplot.est_causal
 #'
 #' @examples
-autoplot.est_causal <- function(obj, ...) {
+autoplot.est_causal <- function(object, ...) {
 
-  gg_res_optim <- tibble(x = 1:ncol(obj$X),
-                         time_lag = colnames(obj$X),
-                         irf = obj$res_optim$par)
+  gg_res_optim <- tibble(x = 1:ncol(object$X),
+                         time_lag = colnames(object$X),
+                         irf = object$res_optim$par)
 
-  the_title <- paste(obj$effect, "--->", obj$cause)
+  the_title <- paste(object$effect, "--->", object$cause)
   the_subtitle <- paste("Explained Variance Ratio:",
-                        sprintf("%.3f", as.numeric(evr(obj))))
+                        sprintf("%.3f", as.numeric(evr(object))))
 
-  ggplot(data = gg_res_optim, mapping = aes(x = x, y = irf, color = x > obj$J)) +
+  ggplot(data = gg_res_optim, mapping = aes(x = x, y = irf, color = x > object$J)) +
     geom_point(show.legend = FALSE) +
     geom_line(show.legend = FALSE) +
-    geom_vline(xintercept = obj$J+1, linetype = 2) +
-    scale_x_continuous(breaks = 1:(2*obj$J+1), labels = gg_res_optim$time_lag) +
+    geom_vline(xintercept = object$J+1, linetype = 2) +
+    scale_x_continuous(breaks = 1:(2*object$J+1), labels = gg_res_optim$time_lag) +
     labs(title = the_title, subtitle = the_subtitle) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
