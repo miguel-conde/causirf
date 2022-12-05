@@ -1,4 +1,4 @@
-source("./causality/utils_sto_causal.R")
+library(causalirf)
 
 # DATA --------------------------------------------------------------------
 

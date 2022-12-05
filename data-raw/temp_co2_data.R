@@ -1,5 +1,6 @@
 
-library(readr)
+library(dplyr)
+
 co2_data <- readr::read_csv("https://datahub.io/core/co2-ppm/r/co2-mm-mlo.csv")
 
 # ggplot(data = co2_data, aes(x = Date)) +
