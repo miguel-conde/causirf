@@ -8,7 +8,8 @@
 #' @param J
 #'
 #' @return
-#' @import tidyverse
+#' @import dplyr
+#' @import tidyr
 #' @export
 #'
 #' @examples
@@ -139,6 +140,7 @@ evr <- function(obj) {
 #' @param ...
 #'
 #' @return
+#' @import ggplot2
 #' @importFrom ggplot2 autoplot
 #' @export autoplot.est_causal
 #'
