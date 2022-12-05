@@ -2,11 +2,8 @@
 
 export("%>%")
 export(autoplot.est_causal)
-export(cost_fun)
 export(est_causal)
 export(evr)
-export(make_probe_x_y)
-export(make_psi)
 import(dplyr)
 import(ggplot2)
 import(tidyr)

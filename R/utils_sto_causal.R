@@ -10,7 +10,6 @@
 #' @return
 #' @import dplyr
 #' @import tidyr
-#' @export
 #'
 #' @examples
 make_probe_x_y <- function(in_data, causa, efecto, J = 10) {
@@ -39,7 +38,6 @@ make_probe_x_y <- function(in_data, causa, efecto, J = 10) {
 #' @param lambda
 #'
 #' @return
-#' @export
 #'
 #' @examples
 cost_fun <- function(g, L, J, X, Y, psi, lambda) {
@@ -58,7 +56,6 @@ cost_fun <- function(g, L, J, X, Y, psi, lambda) {
 #' @param J
 #'
 #' @return
-#' @export
 #'
 #' @examples
 make_psi <- function(J) {
@@ -103,6 +100,8 @@ est_causal <- function(in_data, causa, efecto, J = 20, lambda = 10) {
               L = L,
               J = J,
               psi = psi,
+              cause = causa,
+              effect = efecto,
               res_optim = res_optim)
 
   class(out) <- c("est_causal", class(out))
@@ -144,6 +143,9 @@ evr <- function(obj) {
 #' @importFrom ggplot2 autoplot
 #' @export autoplot.est_causal
 #'
+#' @method autoplot est_causal
+#' @aliases autoplot.est_causal
+#'
 #' @examples
 autoplot.est_causal <- function(obj, ...) {
 
@@ -151,11 +153,16 @@ autoplot.est_causal <- function(obj, ...) {
                          time_lag = colnames(obj$X),
                          irf = obj$res_optim$par)
 
+  the_title <- paste(obj$effect, "--->", obj$cause)
+  the_subtitle <- paste("Explained Variance Ratio:",
+                        sprintf("%.3f", as.numeric(evr(obj))))
+
   ggplot(data = gg_res_optim, mapping = aes(x = x, y = irf, color = x > obj$J)) +
-    geom_point() +
-    geom_line() +
+    geom_point(show.legend = FALSE) +
+    geom_line(show.legend = FALSE) +
     geom_vline(xintercept = obj$J+1, linetype = 2) +
     scale_x_continuous(breaks = 1:(2*obj$J+1), labels = gg_res_optim$time_lag) +
+    labs(title = the_title, subtitle = the_subtitle) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }

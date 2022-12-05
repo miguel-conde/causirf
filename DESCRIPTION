@@ -1,18 +1,18 @@
 Package: causirf
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Hen-or-Egg Causality Analysis
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Miguel Conde
+Maintainer: Miguel Conde <miguelco2000@gmail.com>
+Description: Based upon the existence of an impulse response function (IRF) connecting two stochastic processes, the utils in this package allow to identify  necessary conditions for the existence of a (linear) causal link either from x to y or y to x, or of a hen-or-egg (HOE) situation in which causal influences  appear to go in both directions.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.2
+URL: https://github.com/miguel-conde/causirf
 Depends: 
     R (>= 2.10)
 Imports: 
