@@ -8,7 +8,7 @@ test_that("Causal estimate is performed", {
 
 test_that("a causal estimate object can be (gg)plottted", {
   obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
-  p <- autoplot.est_causal(obj_causal_temp_co2)
+  p <- autoplot(obj_causal_temp_co2)
 
   expect_s3_class(p, "ggplot")
 })

@@ -4,7 +4,7 @@
 \alias{autoplot.est_causal}
 \title{Title}
 \usage{
-\method{autoplot}{est_causal}(obj, ...)
+\method{autoplot}{est_causal}(object, ...)
 }
 \arguments{
 \item{...}{}

@@ -135,16 +135,13 @@ evr <- function(obj) {
 
 #' Title
 #'
-#' @param obj
+#' @param object
 #' @param ...
 #'
 #' @return
 #' @import ggplot2
 #' @importFrom ggplot2 autoplot
-#' @export autoplot.est_causal
-#'
-#' @method autoplot est_causal
-#' @aliases autoplot.est_causal
+#' @export
 #'
 #' @examples
 autoplot.est_causal <- function(object, ...) {
@@ -157,7 +154,8 @@ autoplot.est_causal <- function(object, ...) {
   the_subtitle <- paste("Explained Variance Ratio:",
                         sprintf("%.3f", as.numeric(evr(object))))
 
-  ggplot(data = gg_res_optim, mapping = aes(x = x, y = irf, color = x > object$J)) +
+  p <- ggplot(data = gg_res_optim,
+              mapping = aes(x = x, y = irf, color = x > object$J)) +
     geom_point(show.legend = FALSE) +
     geom_line(show.legend = FALSE) +
     geom_vline(xintercept = object$J+1, linetype = 2) +
@@ -165,6 +163,8 @@ autoplot.est_causal <- function(object, ...) {
     labs(title = the_title, subtitle = the_subtitle) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  return(p)
 }
 
 
