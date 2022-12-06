@@ -19,6 +19,7 @@ Compute the Explained Variance Ratio (EVR)
 \examples{
 \dontrun{
 library(causirf)
+library(ggplot2)
 
 data(temp_co2_data)
 

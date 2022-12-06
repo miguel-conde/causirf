@@ -115,6 +115,7 @@ make_psi <- function(J) {
 #' @examples
 #' \dontrun{
 #' library(causirf)
+#' library(ggplot2)
 #'
 #' data(temp_co2_data)
 #'
@@ -167,6 +168,7 @@ est_irf <- function(in_data, cause, effect, J = 20, lambda = 10) {
 #' @examples
 #' \dontrun{
 #' library(causirf)
+#' library(ggplot2)
 #'
 #' data(temp_co2_data)
 #'
@@ -211,6 +213,7 @@ evr <- function(obj) {
 #' @examples
 #' \dontrun{
 #' library(causirf)
+#' library(ggplot2)
 #'
 #' data(temp_co2_data)
 #'

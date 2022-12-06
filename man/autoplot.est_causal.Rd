@@ -21,6 +21,7 @@ Plot an estimated IRF
 \examples{
 \dontrun{
 library(causirf)
+library(ggplot2)
 
 data(temp_co2_data)
 

@@ -36,6 +36,7 @@ as one of the causes of the other.
 \examples{
 \dontrun{
 library(causirf)
+library(ggplot2)
 
 data(temp_co2_data)
 
