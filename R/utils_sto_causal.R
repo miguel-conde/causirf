@@ -229,7 +229,7 @@ autoplot.est_causal <- function(object, ...) {
                          time_lag = colnames(object$X),
                          irf = object$res_optim$par)
 
-  the_title <- paste(object$effect, "--->", object$cause)
+  the_title <- paste(object$cause, "--->", object$effect)
   the_subtitle <- paste("Explained Variance Ratio:",
                         sprintf("%.3f", as.numeric(evr(object))))
 
