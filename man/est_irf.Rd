@@ -44,7 +44,7 @@ obj_causal_temp_co2 <- est_irf(temp_co2_data, "temp", "co2", J = 20, lambda = 10
 
 autoplot(obj_causal_temp_co2)
 
-evr(obj_causal_co2_temp)
+evr(obj_causal_temp_co2)
 }
 }
 \references{

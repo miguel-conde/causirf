@@ -123,7 +123,7 @@ make_psi <- function(J) {
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
-#' evr(obj_causal_co2_temp)
+#' evr(obj_causal_temp_co2)
 #' }
 est_irf <- function(in_data, cause, effect, J = 20, lambda = 10) {
 
@@ -176,7 +176,7 @@ est_irf <- function(in_data, cause, effect, J = 20, lambda = 10) {
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
-#' evr(obj_causal_co2_temp)
+#' evr(obj_causal_temp_co2)
 #' }
 evr <- function(obj) {
 
@@ -221,7 +221,7 @@ evr <- function(obj) {
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
-#' evr(obj_causal_co2_temp)
+#' evr(obj_causal_temp_co2)
 #' }
 autoplot.est_causal <- function(object, ...) {
 
