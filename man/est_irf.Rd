@@ -40,7 +40,7 @@ library(ggplot2)
 
 data(temp_co2_data)
 
-obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+obj_causal_temp_co2 <- est_irf(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
 
 autoplot(obj_causal_temp_co2)
 

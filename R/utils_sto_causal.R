@@ -119,7 +119,7 @@ make_psi <- function(J) {
 #'
 #' data(temp_co2_data)
 #'
-#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#' obj_causal_temp_co2 <- est_irf(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
@@ -172,7 +172,7 @@ est_irf <- function(in_data, cause, effect, J = 20, lambda = 10) {
 #'
 #' data(temp_co2_data)
 #'
-#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#' obj_causal_temp_co2 <- est_irf(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
@@ -217,7 +217,7 @@ evr <- function(obj) {
 #'
 #' data(temp_co2_data)
 #'
-#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#' obj_causal_temp_co2 <- est_irf(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
 #'
 #' autoplot(obj_causal_temp_co2)
 #'
