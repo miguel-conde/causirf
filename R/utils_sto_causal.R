@@ -1,25 +1,31 @@
 # https://royalsocietypublishing.org/doi/10.1098/rspa.2021.0835
 
-#' Title
+#' Extends the data with lags
 #'
-#' @param in_data
-#' @param causa
-#' @param efecto
-#' @param J
+#' @param in_dataa tibble, one of the colummns must account for the cause and
+#' the other for the effect.
+#' @param cause name of the column accounting for the cause
+#' @param effect name of the column accounting for the effect
+#' @param J number of positive and negative lags composing the IRF
 #'
-#' @return
+#' @return the \code{in_data} tibble extended with \code{2J+1} lag columns
+#'
+#' @encoding UTF-8
+#'
 #' @import dplyr
 #' @import tidyr
+#' @importFrom rlang :=
 #'
-#' @examples
-make_probe_x_y <- function(in_data, causa, efecto, J = 10) {
+#' @keywords internal
+#'
+make_probe_x_y <- function(in_data, cause, effect, J = 10) {
 
   probe_x_y <- in_data
   for (i in -J:J) {
     FUN <- ifelse(i > 0, lag, lead)
 
     probe_x_y <- probe_x_y %>%
-      mutate(!!sym(paste0("lag_", i)) := FUN(!!sym(causa), n = abs(i)))
+      mutate(!!sym(paste0("lag_", i)) := FUN(!!sym(cause), n = abs(i)))
   }
 
   probe_x_y <- probe_x_y %>% drop_na()
@@ -27,19 +33,17 @@ make_probe_x_y <- function(in_data, causa, efecto, J = 10) {
   return(probe_x_y)
 }
 
-#' Title
+#' Cost function to estimate IRF using least-squares
 #'
-#' @param g
-#' @param L
-#' @param J
-#' @param X
-#' @param Y
-#' @param psi
-#' @param lambda
+#' @param g numeric vector for the IRF, with \code{J} elements
+#' @param L,J,X,Y,psi,lambda objects used to compute de cost function value
 #'
-#' @return
+#' @return the value of the cost function at \code{g}
 #'
-#' @examples
+#' @encoding UTF-8
+#'
+#' @keywords internal
+#'
 cost_fun <- function(g, L, J, X, Y, psi, lambda) {
 
   v_t <- Y - X %*% g
@@ -51,13 +55,15 @@ cost_fun <- function(g, L, J, X, Y, psi, lambda) {
 
 }
 
-#' Title
+#' Build the matrix for the roughness index
 #'
 #' @param J
 #'
-#' @return
+#' @return a matrix with \code{2J−1} rows and \code{2J+1} columns
 #'
-#' @examples
+#' @encoding UTF-8
+#' @keywords internal
+#'
 make_psi <- function(J) {
 
   out <- matrix(0, nrow = 2*J-1, ncol = 2*J+1)
@@ -71,24 +77,59 @@ make_psi <- function(J) {
   return(out)
 }
 
-#' Title
+#' Estimate the Impulse Response Function (IRF)
 #'
-#' @param in_data
-#' @param causa
-#' @param efecto
-#' @param J
-#' @param lambda
+#' This function estimates the IRF between 2 stochastic processes, one taken
+#' as one of the causes of the other.
 #'
-#' @return
+#' @param in_data a tibble, one of the colummns must account for the cause and
+#' the other for the effect.
+#' @param cause name of the column accounting for the cause
+#' @param effect name of the column accounting for the effect
+#' @param J number of positive and negative lags composing the IRF
+#' @param lambda weight multiplier to constrain the roughness index (weight of
+#' the penalty from the roughness index)
+#'
+#' @references
+#' \itemize{
+#' \item \href{https://royalsocietypublishing.org/doi/10.1098/rspa.2021.0835}{Revisiting causality using stochastics: 1. Theory},
+#' \item \href{https://royalsocietypublishing.org/doi/10.1098/rspa.2021.0836}{Revisiting causality using stochastics: 2. Applications}
+#'}
+#'
+#' @return an \code{est_causal} object, a list containing:
+#'
+#' \itemize{
+#' \item \code{X}, \code{Y}, \code{L}, \code{J}, \code{psi}: objects used in the optimization
+#' \item \code{cause}, \code{effect}: names of the cause and the effect
+#' \item \code{res_optim}: result of \link[stats:optim]{stats::optim}
+#' }
+#'
+#' @importFrom stats optim
 #' @export
 #'
+#' @encoding UTF-8
+#'
+#' @seealso \code{\link[causirf:autoplot.est_causal]{causirf::autoplot}},
+#' \code{\link[causirf:evr]{causirf::evr}}
+#'
 #' @examples
-est_causal <- function(in_data, causa, efecto, J = 20, lambda = 10) {
+#' \dontrun{
+#' library(causirf)
+#'
+#' data(temp_co2_data)
+#'
+#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#'
+#' autoplot(obj_causal_temp_co2)
+#'
+#' evr(obj_causal_co2_temp)
+#' }
+est_irf <- function(in_data, cause, effect, J = 20, lambda = 10) {
 
   L <- nrow(in_data)
-  probe <- make_probe_x_y(in_data %>% select(-date), causa, efecto, J = J)
-  X <- probe %>% select(-all_of(c(causa, efecto))) %>% as.matrix()
-  Y <- probe %>% select(all_of(efecto)) %>% as.matrix()
+  probe <- make_probe_x_y(in_data %>% select(all_of(c(cause, effect))), cause, effect, J = J)
+  X <- probe %>% select(-all_of(c(cause, effect))) %>% as.matrix()
+  Y <- probe %>% select(all_of(effect)) %>% as.matrix()
   psi <- make_psi(J)
 
   res_optim <- optim(rep(0, 2*J+1), fn = cost_fun,
@@ -100,8 +141,8 @@ est_causal <- function(in_data, causa, efecto, J = 20, lambda = 10) {
               L = L,
               J = J,
               psi = psi,
-              cause = causa,
-              effect = efecto,
+              cause = cause,
+              effect = effect,
               res_optim = res_optim)
 
   class(out) <- c("est_causal", class(out))
@@ -109,16 +150,33 @@ est_causal <- function(in_data, causa, efecto, J = 20, lambda = 10) {
   return(out)
 }
 
-#' Title
+#' Compute the Explained Variance Ratio (EVR)
 #'
-#' @param obj
+#' @param obj an \code{est_causal} object generated by \code{\link[causirf:est_irf]{causirf::est_irf}}
 #'
-#' @return
+#' @return an estimate for the EVR of \code{obj}
+#'
+#' @importFrom stats var
 #' @export
 #'
+#' @encoding UTF-8
+#'
+#' @seealso \code{\link[causirf:autoplot.est_causal]{causirf::autoplot}},
+#' \code{\link[causirf:est_irf]{causirf::est_irf}}
+#'
 #' @examples
+#' \dontrun{
+#' library(causirf)
+#'
+#' data(temp_co2_data)
+#'
+#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#'
+#' autoplot(obj_causal_temp_co2)
+#'
+#' evr(obj_causal_co2_temp)
+#' }
 evr <- function(obj) {
-  # Explained variance ratio
 
   v_t <- obj$Y - obj$X %*% matrix(obj$res_optim$par)
   mu_v <- mean(v_t)
@@ -133,17 +191,35 @@ evr <- function(obj) {
 }
 
 
-#' Title
+#' Plot an estimated IRF
 #'
-#' @param object
-#' @param ...
+#' @param object an \code{est_causal} object generated by \code{\link[causirf:est_irf]{causirf::est_irf}}
+#' @param ... other arguments passed to specific methods
 #'
-#' @return
+#' @return a ggplot object
+#'
 #' @import ggplot2
 #' @importFrom ggplot2 autoplot
+#'
 #' @export
 #'
+#' @encoding UTF-8
+#'
+#' @seealso \code{\link[causirf:est_irf]{causirf::est_irf}},
+#' \code{\link[causirf:evr]{causirf::evr}}
+#'
 #' @examples
+#' \dontrun{
+#' library(causirf)
+#'
+#' data(temp_co2_data)
+#'
+#' obj_causal_temp_co2 <- est_causal(temp_co2_data, "temp", "co2", J = 20, lambda = 10)
+#'
+#' autoplot(obj_causal_temp_co2)
+#'
+#' evr(obj_causal_co2_temp)
+#' }
 autoplot.est_causal <- function(object, ...) {
 
   gg_res_optim <- tibble(x = 1:ncol(object$X),
